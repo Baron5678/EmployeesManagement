@@ -1,0 +1,97 @@
+﻿<Window x:Class="WPFLab2.AddNewEmployee"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFLab2"
+        mc:Ignorable="d"
+        Title="Add new Employee" 
+        Height="500" 
+        Width="500" 
+        Topmost="True" 
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen"
+        FontSize="14">
+    <Window.Resources>
+        <local:SexConvertor x:Key="checkedSex"/>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="2,0,0,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="0,0,0,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+        <Style TargetType="RadioButton">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Margin" Value="0,0,0,7"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="Validated" TargetType="TextBox">
+            <Setter Property="Margin" Value="0,0,0,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>    
+        </Style>
+    </Window.Resources>
+    <Grid Margin="50">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="130"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="First Name:"/>
+        <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+        <TextBlock Grid.Row="1" Text="Last Name:"/>
+        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" MaxLength="50"/>
+        <TextBlock Grid.Row="2" Grid.RowSpan="2" Text="Sex:"/>
+        <RadioButton Grid.Column="1" Grid.Row="2" GroupName="Sex" Content="Male"
+                    IsChecked="{Binding Sex, Converter={StaticResource checkedSex}, ConverterParameter=Male, UpdateSourceTrigger=PropertyChanged}"/>
+        <RadioButton Grid.Column="1" Grid.Row="3" GroupName="Sex" Content="Female"
+                     IsChecked="{Binding Sex, Converter={StaticResource checkedSex}, ConverterParameter=Female, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Grid.Row="4" Text="Birth Date:"/>
+        <DatePicker Grid.Column="1" Grid.Row="4" SelectedDate="{Binding BirthDate, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBlock Grid.Row="5" Text="Birth Country:"/>
+        <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding BirthCountry, UpdateSourceTrigger=PropertyChanged}" MaxLength="100"/>
+        <TextBlock Grid.Row="6" Text="Salary:"/>
+        <TextBox Grid.Column="1" Grid.Row="6" MaxLength="50" Style="{StaticResource Validated}">
+            <TextBox.Text>
+                <Binding Path="Salary" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
+                    <Binding.ValidationRules>
+                        <local:MinSalaryValidation/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <TextBlock Grid.Row="7" Text="Salary Currency:"/>
+        <ComboBox Grid.Column="1" Grid.Row="7" 
+                  ItemsSource="{Binding Source={StaticResource ResourceKey=CurrencyList}}"
+                  SelectedItem="{Binding SalaryCurrency, Mode=TwoWay}" />
+        <TextBlock Grid.Row="8" Text="Company Role:"/>
+        <ComboBox Grid.Column="1" Grid.Row="8" 
+            ItemsSource="{Binding Source={StaticResource ResourceKey=RolesList}}"
+            SelectedItem="{Binding CompanyRole, Mode=TwoWay}" />
+        <Button Grid.Row="9" Grid.ColumnSpan="2" Click="Add" Content="Add"/>
+    </Grid>
+</Window>
